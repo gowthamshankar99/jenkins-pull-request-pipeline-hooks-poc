@@ -5,11 +5,12 @@ pipeline {
             steps {
                 script {
                     print("hukum")
+                    print(env.CHANGE_ID)
                     print("${ghprbPullId}")
                     def stateMachineArn = 'arn:aws:states:us-east-1:471774948982:stateMachine:grap-sqs-poc'
                     //def inputPayload = '{"key": ${ghprbPullId}}'  // Replace with your input JSON payload
                     def inputPayload = '{"key": ' + env.ghprbPullId + '}'
-
+                
 
                     def startExecutionCmd = "aws stepfunctions start-execution --state-machine-arn ${stateMachineArn} --input '${inputPayload}'"
                     def executionArn = sh(script: startExecutionCmd, returnStdout: true).trim()
