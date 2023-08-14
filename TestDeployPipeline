@@ -1,0 +1,53 @@
+pipeline {
+    agent any
+ stages {
+        stage('Invoke Step Function') {
+            steps {
+                script {
+                    print("hukum")
+                    print("${ghprbPullId}")
+                    def stateMachineArn = 'arn:aws:states:us-east-1:471774948982:stateMachine:grap-sqs-poc'
+                    //def inputPayload = '{"key": ${ghprbPullId}}'  // Replace with your input JSON payload
+                    def inputPayload = '{"key": ' + env.ghprbPullId + '}'
+
+
+                    def startExecutionCmd = "aws stepfunctions start-execution --state-machine-arn ${stateMachineArn} --input '${inputPayload}'"
+                    def executionArn = sh(script: startExecutionCmd, returnStdout: true).trim()
+
+                    echo "Step Function Execution ARN: ${executionArn}"
+
+                    def executionArnJSON = readJSON text: executionArn
+                    env.EXECUTION_ARN = executionArnJSON.executionArn
+                }
+            }
+        }
+    stage('Monitor Step Function Execution') {
+        steps {
+            script {
+                def checkStatusCmd = "aws stepfunctions describe-execution --execution-arn ${EXECUTION_ARN}"
+                def executionStatus = ''
+    
+                while (executionStatus != 'SUCCEEDED' && executionStatus != 'FAILED') {
+                    def executionStatusOutput = sh(script: checkStatusCmd, returnStdout: true).trim()
+                    def executionStatusJson = readJSON text: executionStatusOutput
+                    executionStatus = executionStatusJson.status
+    
+                    echo "Step Function Execution Status: ${executionStatus}"
+    
+                    if (executionStatus == 'RUNNING') {
+                        sleep time: 10, unit: 'SECONDS'
+                    } else {
+                        break
+                    }
+                }
+    
+                if (executionStatus == 'SUCCEEDED') {
+                    echo "Step Function Execution succeeded!"
+                } else {
+                    error "Step Function Execution failed!"
+                }
+            }
+        }
+    }
+    }
+}
