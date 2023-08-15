@@ -5,7 +5,7 @@ pipeline {
             steps {
                 script {
                     echo "****************"
-                    print($IF_MERGED)
+                    sh 'echo $IF_MERGED'
                     def templatesDir = ''  // assuming this is where the repo is cloned test addsss
 
                     // List all CloudFormation template files in the directory
