@@ -4,6 +4,7 @@ pipeline {
         stage('Validate CF Templates') {
             steps {
                 script {
+                    print(params.IF_MERGED)
                     def templatesDir = ''  // assuming this is where the repo is cloned test addsss
 
                     // List all CloudFormation template files in the directory
