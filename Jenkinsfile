@@ -11,6 +11,10 @@ pipeline {
                     def action = new groovy.json.JsonSlurper().parseText(jsonObject.payload[0]).action
                     
                     println "Action: $action    "
+                    if($action == "Synchronize") {
+                        echo "Condition was met. Exiting the pipeline successfully."
+                        return                    
+                    }
                     def templatesDir = ''  // assuming this is where the repo is cloned test addsss
 
                     // List all CloudFormation template files in the directory
