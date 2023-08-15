@@ -14,7 +14,7 @@ pipeline {
                     println "Action: $action    "
                     if(action == "synchronize") {
                         echo "Condition was met. Exiting the pipeline successfully."
-                        skipSteps = true
+                        env.skipSteps = true
                         return                    
                     }
                     def templatesDir = ''  // assuming this is where the repo is cloned test addsss
