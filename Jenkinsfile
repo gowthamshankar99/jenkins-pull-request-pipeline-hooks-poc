@@ -36,7 +36,7 @@ pipeline {
         stage('cfn-nag cfn templates') {
             when {
                 expression {
-                    return skipSteps
+                    return env.skipSteps
                 }
             }            
             steps {
