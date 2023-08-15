@@ -11,7 +11,7 @@ pipeline {
                     def action = new groovy.json.JsonSlurper().parseText(jsonObject.payload[0]).action
                     
                     println "Action: $action    "
-                    if($action == "Synchronize") {
+                    if(action == "Synchronize") {
                         echo "Condition was met. Exiting the pipeline successfully."
                         return                    
                     }
