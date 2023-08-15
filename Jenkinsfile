@@ -8,7 +8,7 @@ pipeline {
                     //print("$IF_MERGED")
                     def jsonObject = new groovy.json.JsonSlurper().parseText("$IF_MERGED")
                     print(jsonObject)
-                    def action = jsonObject.payload[0].action
+                    def action = jsonObject.payload[0]
                     println "Action: $action    "                
                     def templatesDir = ''  // assuming this is where the repo is cloned test addsss
 
