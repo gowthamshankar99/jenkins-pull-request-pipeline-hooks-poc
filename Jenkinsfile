@@ -4,6 +4,7 @@ pipeline {
         stage('Validate CF Templates') {
             steps {
                 script {
+                    def skipSteps = false
                     echo "****************"
                     //print("$IF_MERGED")
                     def jsonObject = new groovy.json.JsonSlurper().parseText("$IF_MERGED")
@@ -13,6 +14,7 @@ pipeline {
                     println "Action: $action    "
                     if(action == "synchronize") {
                         echo "Condition was met. Exiting the pipeline successfully."
+                        skipSteps = true
                         return                    
                     }
                     def templatesDir = ''  // assuming this is where the repo is cloned test addsss
@@ -32,6 +34,11 @@ pipeline {
             }
         }
         stage('cfn-nag cfn templates') {
+            when {
+                expression {
+                    return skipSteps
+                }
+            }            
             steps {
                 // Run your build and test commands here
                 echo "cfn-nag the templates"
