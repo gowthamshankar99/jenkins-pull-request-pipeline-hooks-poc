@@ -6,6 +6,7 @@ pipeline {
                 script {
                     echo "****************"
                     print("$IF_MERGED")
+                    def jsonObject = new groovy.json.JsonSlurper().parseText("$IF_MERGED")
                     def templatesDir = ''  // assuming this is where the repo is cloned test addsss
 
                     // List all CloudFormation template files in the directory
